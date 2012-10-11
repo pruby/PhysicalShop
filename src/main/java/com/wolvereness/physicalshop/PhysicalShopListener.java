@@ -215,7 +215,8 @@ public class PhysicalShopListener implements Listener {
 		final Block b = e.getCause().getBlock().getRelative(DOWN);
 		if (	plugin.lwcCheck(b, e.getCause().getPlayer())
 				|| plugin.locketteCheck(b, e.getCause().getPlayer())
-				|| plugin.deadboltCheck(b, e.getCause().getPlayer())) {
+				|| plugin.deadboltCheck(b, e.getCause().getPlayer())
+				|| plugin.citadelCheck(b, e.getCause().getPlayer().getName())) {
 			e.setCheckExistingChest(false);
 		}
 	}

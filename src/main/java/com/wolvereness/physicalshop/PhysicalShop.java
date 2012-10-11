@@ -28,6 +28,7 @@ import com.daemitus.deadbolt.Deadbolt;
 import com.daemitus.deadbolt.DeadboltPlugin;
 import com.daemitus.deadbolt.Deadbolted;
 import com.griefcraft.lwc.LWCPlugin;
+import com.untamedears.citadel.Citadel;
 import com.wolvereness.physicalshop.config.Localized;
 import com.wolvereness.physicalshop.config.MaterialConfig;
 import com.wolvereness.physicalshop.config.StandardConfig;
@@ -71,6 +72,7 @@ public class PhysicalShop extends JavaPlugin implements Verbosable {
 	private Localized locale;
 	private Plugin lockette = null;
 	private LWCPlugin lwc = null;
+	private Citadel citadel = null;
 	private MaterialConfig materialConfig;
 	private Permissions permissions;
 	private final ShowcaseListener showcaseListener = new ShowcaseListener(this);
@@ -165,6 +167,18 @@ public class PhysicalShop extends JavaPlugin implements Verbosable {
 		return lwc.getLWC().canAdminProtection(player, block);
 	}
 	/**
+	 * Method used to hook into Citadel
+	 * @param block 
+	 * 				block that might be locked
+	 * @param name 
+	 *				player name on the sign
+	 * @return returns true if citadel is enabled and the player is allowed to access the block
+	 */
+	public boolean citadelCheck(final Block block, final String name) {
+		if (citadel == null || !citadel.isEnabled()) return false;
+		return citadel.playerCanAccessBlock(block, name);
+	}
+	/**
 	 * This will capture the only command, /physicalshop. It will send version information to the sender, and it checks permissions and reloads config if there is proper permission to.
 	 * @param sender Player / Console sending command
 	 * @param command ignored
@@ -232,6 +246,14 @@ public class PhysicalShop extends JavaPlugin implements Verbosable {
 				final Plugin temp = getServer().getPluginManager().getPlugin("Deadbolt");
 				if(temp instanceof DeadboltPlugin) {
 					deadbolt = temp;
+				}
+			} catch (final Throwable er) {
+			}
+			
+			try {
+				final Plugin temp = getServer().getPluginManager().getPlugin("Citadel");
+				if (temp instanceof Citadel) {
+					citadel = (Citadel) temp;
 				}
 			} catch (final Throwable er) {
 			}
