@@ -5,14 +5,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Level;
 
-import net.minecraft.server.EntityItem;
-import net.minecraft.server.NetServerHandler;
-import net.minecraft.server.Packet;
-import net.minecraft.server.Packet21PickupSpawn;
-import net.minecraft.server.Packet29DestroyEntity;
+import net.minecraft.server.v1_4_5.EntityItem;
+import net.minecraft.server.v1_4_5.NetServerHandler;
+import net.minecraft.server.v1_4_5.Packet;
+import net.minecraft.server.v1_4_5.Packet21PickupSpawn;
+import net.minecraft.server.v1_4_5.Packet29DestroyEntity;
 
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_4_5.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.util.NumberConversions;
@@ -27,7 +27,7 @@ public class PlayerHandler {
 	/**
 	 * The MC version that it was compiled against.
 	 */
-	public static final String MC_VERSION = "(MC: 1.3.1)";
+	public static final String MC_VERSION = "(MC: 1.4.5)";
 
 	/**
 	 * This creates a destroy packet for reuse (and also gets an entity id)
@@ -80,7 +80,7 @@ public class PlayerHandler {
         store[index + 1] = (byte) ((s >>> 0) & 0xFF);
 	}
 
-	private final byte[] dataArray = new byte[24];
+	private final byte[] dataArray = new byte[26];
 	private final DataInputStream inputStream = new DataInputStream(new InputStream() {
 		private final byte[] dataArray = PlayerHandler.this.dataArray;
 		@Override
@@ -108,7 +108,9 @@ public class PlayerHandler {
 
 		putData(dataArray, 0, showcaseListener.getEntityId());
 		putData(dataArray, 6, (byte) 16);
-		putData(dataArray, 22, (byte) (0.2d * 128.0D));
+		putData(dataArray, 23, (byte) 0);
+		putData(dataArray, 24, (byte) (0.2d * 128.0D));
+		putData(dataArray, 25, (byte) 0);
 	}
 
 	/**
@@ -140,9 +142,10 @@ public class PlayerHandler {
 		final byte[] dataArray = this.dataArray;
 		putData(dataArray, 4, (short) item.getMaterial().getId());
 		putData(dataArray, 7, item.getDurability());
-		putData(dataArray, 9, NumberConversions.floor(loc.getX() * 32.0D));
-		putData(dataArray, 13, NumberConversions.floor(loc.getY() * 32.0D));
-		putData(dataArray, 17, NumberConversions.floor(loc.getZ() * 32.0D));
+		putData(dataArray, 9, (short) -1); // tag compound byte array size, -1 ignores the tag compound
+		putData(dataArray, 11, NumberConversions.floor(loc.getX() * 32.0D));
+		putData(dataArray, 15, NumberConversions.floor(loc.getY() * 32.0D));
+		putData(dataArray, 19, NumberConversions.floor(loc.getZ() * 32.0D));
 
 		itemPacket.a(inputStream); // This prevents variable references, hopefully maintaining forward compatibility
 		if (marker != dataArray.length - 1)
