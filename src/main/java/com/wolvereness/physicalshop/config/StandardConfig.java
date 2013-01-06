@@ -9,7 +9,7 @@ import org.bukkit.Material;
 import org.bukkit.plugin.Plugin;
 
 import com.google.common.collect.ImmutableList;
-import com.wolvereness.physicalshop.showcase.PlayerHandler;
+import com.wolvereness.physicalshop.showcase.ShowcaseListener;
 
 /**
  * @author Wolfe
@@ -153,6 +153,6 @@ public class StandardConfig {
 	 */
 	public boolean isValidVersion() {
 		return plugin.getConfig().getBoolean(IGNORE_VERSION, false)
-			|| plugin.getServer().getVersion().contains(PlayerHandler.MC_VERSION);
+			|| plugin.getServer().getVersion().contains(ShowcaseListener.MC_VERSION);
 	}
 }

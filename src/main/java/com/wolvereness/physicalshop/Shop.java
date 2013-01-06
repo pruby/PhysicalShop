@@ -1,6 +1,5 @@
 package com.wolvereness.physicalshop;
 
-
 import static com.wolvereness.physicalshop.config.ConfigOptions.TRIGGER_REDSTONE;
 import static com.wolvereness.physicalshop.config.Localized.Message.*;
 import static java.util.logging.Level.SEVERE;
@@ -10,9 +9,10 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
-import org.bukkit.craftbukkit.v1_4_5.CraftChunk;
+import org.bukkit.craftbukkit.v1_4_6.CraftChunk;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.material.Attachable;
 
 import com.wolvereness.physicalshop.config.MaterialConfig;
 import com.wolvereness.physicalshop.exception.InvalidExchangeException;
@@ -425,12 +425,12 @@ public class Shop {
 		final Material type = activatedBlock.getType();
 
 		if(type != Material.LEVER && type != Material.STONE_BUTTON) return;
-		if(ShopHelpers.getFace(activatedBlock.getData()) != face.getOppositeFace()) return;
+		if(((Attachable) activatedBlock.getState().getData()).getAttachedFace() != face.getOppositeFace()) return;
 		if(!(activatedBlock.getChunk() instanceof CraftChunk)) return;
 
 		final CraftChunk chunk = (CraftChunk) activatedBlock.getChunk();
 
-		net.minecraft.server.v1_4_5.Block
+		net.minecraft.server.v1_4_6.Block
 			.byId[chunk.getHandle().world.getTypeId(
 				activatedBlock.getX(),
 				activatedBlock.getY(),

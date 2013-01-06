@@ -1,6 +1,5 @@
 package com.wolvereness.physicalshop.showcase;
 
-import java.util.Iterator;
 import java.util.Map;
 
 import org.bukkit.Location;
@@ -22,7 +21,12 @@ import com.wolvereness.physicalshop.events.ShopInteractEvent;
  * @author Wolfe
  */
 public class ShowcaseListener implements Listener {
-	private Object destroyPacket = null;
+	/**
+	 * The MC version that it was compiled against.
+	 */
+	public static final String MC_VERSION = "(MC: 1.4.6)";
+
+	private final Object destroyPacket = null;
 	private int entityId;
 	private final Map<String, PlayerHandler> handlers = new MapMaker().weakValues().makeMap();
 	private boolean listening = false;
@@ -75,11 +79,12 @@ public class ShowcaseListener implements Listener {
 	 */
 	@EventHandler
 	public void onPlayerQuit(final PlayerQuitEvent event) {
-		if (!status) return;
+		if (!status)
+			return;
 
 		final PlayerHandler handler = handlers.remove(event.getPlayer().getName());
-		if (handler == null) return;
-		handler.close();
+		if (handler == null)
+			return;
 	}
 
 	/**
@@ -88,7 +93,8 @@ public class ShowcaseListener implements Listener {
 	 */
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.LOW)
 	public void onShopInteract(final ShopInteractEvent event) {
-		if (!status || event.getAction() != Action.LEFT_CLICK_BLOCK) return;
+		if (!status || event.getAction() != Action.LEFT_CLICK_BLOCK)
+			return;
 
 		final Shop shop = event.getShop();
 		final Location loc = shop.getSign().getLocation().add(.5d, 0d, .5d);
@@ -97,7 +103,7 @@ public class ShowcaseListener implements Listener {
 		PlayerHandler handler = handlers.get(player.getName());
 		boolean skipDestroy;
 		if (skipDestroy = (handler == null)) {
-			handlers.put(player.getName(), handler = new PlayerHandler(player, this));
+			handlers.put(player.getName(), handler = new PlayerHandler(player));
 		}
 		handler.handle(loc, item, skipDestroy);
 	}
@@ -114,19 +120,8 @@ public class ShowcaseListener implements Listener {
 				plugin.getLogger().info("Showcase listener active");
 				listening = true;
 			}
-			if (destroyPacket == null) {
-				destroyPacket = PlayerHandler.getDestroyPacket(plugin);
-				if (status = (destroyPacket != null)) {
-					entityId = PlayerHandler.getEntityId(destroyPacket);
-				}
-			}
 		} else {
-			final Iterator<PlayerHandler> it = handlers.values().iterator();
-			while (it.hasNext()) {
-				final PlayerHandler handler = it.next();
-				it.remove();
-				handler.close();
-			}
+			handlers.clear();
 		}
 	}
 }
