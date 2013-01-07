@@ -1,5 +1,6 @@
 package com.wolvereness.physicalshop.showcase;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.bukkit.Location;
@@ -10,7 +11,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import com.google.common.collect.MapMaker;
 import com.wolvereness.physicalshop.PhysicalShop;
 import com.wolvereness.physicalshop.Shop;
 import com.wolvereness.physicalshop.ShopMaterial;
@@ -28,7 +28,7 @@ public class ShowcaseListener implements Listener {
 
 	private final Object destroyPacket = null;
 	private int entityId;
-	private final Map<String, PlayerHandler> handlers = new MapMaker().weakValues().makeMap();
+	private final Map<String, PlayerHandler> handlers = new HashMap<String, PlayerHandler>();
 	private boolean listening = false;
 	private final PhysicalShop plugin;
 	private boolean status = false;
