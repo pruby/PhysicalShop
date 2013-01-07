@@ -1,13 +1,12 @@
 package com.wolvereness.physicalshop;
 
-import java.util.Map;
-
+import org.bukkit.Bukkit;
 import org.bukkit.CoalType;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.TreeSpecies;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.material.Coal;
 import org.bukkit.material.Dye;
 import org.bukkit.material.Leaves;
@@ -40,33 +39,28 @@ public class ShopMaterial {
 		return sb.toString();
 	}
 	private final short durability;
-	private final Map<Enchantment, Integer> enchantment;
 	private final Material material;
+	private final ItemMeta meta;
 	/**
 	 * @param itemStack items to derive this material from
 	 */
 	public ShopMaterial(final ItemStack itemStack) {
-		this(itemStack.getType(), itemStack.getDurability(), itemStack.getEnchantments());
+		this(itemStack.getType(), itemStack.getDurability(), itemStack.hasItemMeta() ? itemStack.getItemMeta() : null);
 	}
-	/**
-	 * @param material bukkit material to reference
-	 * @param durability durability to reference
-	 * @param enchantment enchantment to reference
-	 */
-	public ShopMaterial(
+	private ShopMaterial(
 	                    final Material material,
 	                    final short durability,
-	                    final Map<Enchantment,Integer> enchantment) {
+	                    final ItemMeta meta) {
 		this.material = material;
 		this.durability = durability;
-		this.enchantment = enchantment == null ? null : enchantment.isEmpty() ? null : enchantment;
+		this.meta = Bukkit.getItemFactory().equals(meta, null) ? null : meta;
 	}
 	/**
 	 * @param string input string
 	 * @throws InvalidMaterialException if material invalid
 	 */
 	public ShopMaterial(final String string) throws InvalidMaterialException {
-		enchantment = null;
+		meta = null;
 		final String[] strings = string.split(":");
 
 		if (strings.length == 2) {
@@ -102,10 +96,7 @@ public class ShopMaterial {
 		final ShopMaterial other = (ShopMaterial) obj;
 		if (durability != other.durability) return false;
 		if (material != other.material) return false;
-		if (enchantment == other.enchantment) return true;
-		if (enchantment == null) return false;
-		if (!enchantment.equals(other.enchantment)) return false;
-		return true;
+		return Bukkit.getItemFactory().equals(meta, other.meta);
 	}
 	/**
 	 * @return the durability for this material
@@ -126,8 +117,8 @@ public class ShopMaterial {
 	public ItemStack getStack(final int amount) {
 		if(amount == 0) return null;
 		final ItemStack stack = new ItemStack(getMaterial(), amount,getDurability());
-		if(enchantment == null) return stack;
-		stack.addUnsafeEnchantments(enchantment);
+		if(meta == null) return stack;
+		stack.setItemMeta(meta);
 		return stack;
 	}
 	@Override
