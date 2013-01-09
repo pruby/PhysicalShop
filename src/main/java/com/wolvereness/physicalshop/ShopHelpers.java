@@ -43,85 +43,51 @@ public class ShopHelpers {
 			WEST,
 			DOWN,
 			UP);
+
 	/**
-	 * Copy & Pasted from GNU GPL Licensed craftbook
-	 * com.sk89q.craftbook.util.SignUtil
-	 * @param sign
-	 *            treated as sign post if it is such, or else assumed to be a
-	 *            wall sign (i.e., if you ask about a stone block, it's
-	 *            considered a wall sign).
-	 * @return the blank side of the sign opposite the text. In the case of a
-	 *         wall sign, the block in this direction is the block to which the
-	 *         sign is attached. This is also the direction a player would be
-	 *         facing when reading the sign.
-	 *
+	 * @param sign Sign to check
+	 * @return The assumed direction behind the sign
 	 */
 	public static BlockFace getBack(final Sign sign) {
 		if (sign.getType() == SIGN_POST) {
-			switch (sign.getRawData()) {
-			case 0x0:
-				return EAST;
-			case 0x1:
-			case 0x2:
-			case 0x3:
-				return SOUTH_EAST;
-			case 0x4:
-				return SOUTH;
-			case 0x5:
-			case 0x6:
-			case 0x7:
-				return SOUTH_WEST;
-			case 0x8:
-				return WEST;
-			case 0x9:
-			case 0xA:
-			case 0xB:
+			switch (((org.bukkit.material.Sign) sign.getData()).getFacing()) {
+
+			case SOUTH_EAST:
+			case SOUTH_SOUTH_EAST:
+			case EAST_SOUTH_EAST:
 				return NORTH_WEST;
-			case 0xC:
-				return NORTH;
-			case 0xD:
-			case 0xE:
-			case 0xF:
+
+			case NORTH_WEST:
+			case NORTH_NORTH_WEST:
+			case WEST_NORTH_WEST:
+				return SOUTH_EAST;
+
+			case SOUTH_WEST:
+			case SOUTH_SOUTH_WEST:
+			case WEST_SOUTH_WEST:
 				return NORTH_EAST;
+
+			case NORTH_EAST:
+			case NORTH_NORTH_EAST:
+			case EAST_NORTH_EAST:
+				return SOUTH_WEST;
+
+			case SOUTH:
+				return NORTH;
+			case EAST:
+				return WEST;
+			case WEST:
+				return EAST;
+			case NORTH:
+				return SOUTH;
+
 			default:
-				return SELF;
+				throw new AssertionError(((org.bukkit.material.Sign) sign.getData()).getFacing());
 			}
 		}
-		switch (sign.getRawData()) {
-		case 0x2:
-			return WEST;
-		case 0x3:
-			return EAST;
-		case 0x4:
-			return SOUTH;
-		case 0x5:
-			return NORTH;
-		default:
-			return SELF;
-		}
+		return ((org.bukkit.material.Sign) sign.getData()).getAttachedFace();
 	}
-	/**
-	 * Copy & Pasted from Bukkit source
-	 * Gets the face that this lever or button is attached on
-	 * @param data Data of the lever or button
-	 * @return BlockFace attached to
-	 */
-	public static BlockFace getFace(final byte data) {
-		switch (data & 0x7) {
-		case 0x1:
-			return NORTH;
-		case 0x2:
-			return SOUTH;
-		case 0x3:
-			return EAST;
-		case 0x4:
-			return WEST;
-		case 0x5:
-		case 0x6:
-			return DOWN;
-		}
-		return null;
-	}
+
 	/**
 	 * Attempts to create a new shop object based on this block
 	 * @param block the block to consider

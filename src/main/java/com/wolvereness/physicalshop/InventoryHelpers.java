@@ -30,7 +30,7 @@ public class InventoryHelpers {
 				} else {
 					if (	(s.getType() != stack.getType())
 							|| (s.getDurability() != stack.getDurability())
-							|| (!s.getEnchantments().isEmpty())
+							|| (s.hasItemMeta())
 							) {
 						continue;
 					}
@@ -95,7 +95,7 @@ public class InventoryHelpers {
 			if (	(i != null)
 					&& (i.getType() == material.getMaterial())
 					&& (i.getDurability() == material.getDurability())
-					&& i.getEnchantments().isEmpty()) {
+					&& !i.hasItemMeta()) {
 				amount += i.getAmount();
 			}
 		}
@@ -134,7 +134,7 @@ public class InventoryHelpers {
 			if (	(s == null)
 					|| (s.getType() != stack.getType())
 					|| (s.getDurability() != stack.getDurability())
-					|| (!s.getEnchantments().isEmpty())) {
+					|| (s.hasItemMeta())) {
 				continue;
 			}
 

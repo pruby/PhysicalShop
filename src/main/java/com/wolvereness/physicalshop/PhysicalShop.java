@@ -326,7 +326,7 @@ public class PhysicalShop extends JavaPlugin implements Verbosable {
 		final File destination = getFileDestination(sender);
 		final String updateURL = getConfig().getString(UPDATE_URL);
 		if(destination == null) return;
-		getServer().getScheduler().scheduleAsyncDelayedTask(this, new Runnable(){
+		getServer().getScheduler().runTaskAsynchronously(this, new Runnable(){
 			public void run() {
 				InputStream in = null;
 				FileOutputStream out = null;

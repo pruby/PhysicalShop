@@ -1,3 +1,10 @@
+(1/7/13) - v9.2.2 - bugfix
+- Fixed: Showcase items persisting
+(1/7/13) - v9.2.1 - update
+- Fixed: 1.4.6 Showcase
+- Fixed: 1.4.6 Redstone
+- Fixed: EntityChangeBlockEvent method mismatch
+- Fixed: Item meta data is no longer lost on shop interaction
 (8/5/12) - v9.2.0 - feature beta
 - Added: 1.3.1 Showcase and redstone support
 - Added: More blocktypes can be shops. This means dispensers will work as a shop.
