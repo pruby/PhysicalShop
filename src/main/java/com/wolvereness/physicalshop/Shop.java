@@ -9,7 +9,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
-import org.bukkit.craftbukkit.v1_4_6.CraftChunk;
+import org.bukkit.craftbukkit.v1_4_R1.CraftChunk;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.material.Attachable;
@@ -430,7 +430,7 @@ public class Shop {
 
 		final CraftChunk chunk = (CraftChunk) activatedBlock.getChunk();
 
-		net.minecraft.server.v1_4_6.Block
+		net.minecraft.server.v1_4_R1.Block
 			.byId[chunk.getHandle().world.getTypeId(
 				activatedBlock.getX(),
 				activatedBlock.getY(),

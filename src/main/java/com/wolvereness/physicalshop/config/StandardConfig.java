@@ -5,6 +5,7 @@ import static com.wolvereness.physicalshop.config.ConfigOptions.*;
 import java.util.EnumSet;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.ClassUtils;
 import org.bukkit.Material;
 import org.bukkit.plugin.Plugin;
 
@@ -153,6 +154,6 @@ public class StandardConfig {
 	 */
 	public boolean isValidVersion() {
 		return plugin.getConfig().getBoolean(IGNORE_VERSION, false)
-			|| plugin.getServer().getVersion().contains(ShowcaseListener.MC_VERSION);
+			|| ClassUtils.getPackageName(plugin.getServer().getClass()).endsWith(ShowcaseListener.PACKAGE_VERSION);
 	}
 }
