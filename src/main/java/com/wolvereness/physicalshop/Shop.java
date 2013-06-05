@@ -8,10 +8,13 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
 import org.bukkit.craftbukkit.v1_4_6.CraftChunk;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Attachable;
 
 import com.wolvereness.physicalshop.config.MaterialConfig;
@@ -56,6 +59,7 @@ public class Shop {
 	private final String ownerName;
 	private final Rate sellRate;
 	private final Sign sign;
+	
 	/**
 	 * Initializes Shop based off of sign.
 	 * @param sign the sign to consider
@@ -84,11 +88,27 @@ public class Shop {
 	private Shop(final String[] lines, final PhysicalShop plugin, final Sign sign) throws InvalidSignException {
 		this.sign = sign;
 		material = getMaterial(lines, plugin.getMaterialConfig());
+		if (material.isVariable()) {
+			material = materialFromAttached(0);
+		}
 
 		if (material == null) throw new InvalidSignException();
 
 		buyRate = plugin.getPluginConfig().getBuyPatternHandler().getRate(lines[1], plugin);
+		if (buyRate.getMaterial().isVariable()) {
+			ShopMaterial currency = materialFromAttached(1);
+			if (currency != null) {
+				buyRate = new Rate(buyRate.getAmount(), buyRate.getPrice(), materialFromAttached(1));
+			}
+		}
+
 		sellRate = plugin.getPluginConfig().getSellPatternHandler().getRate(lines[2], plugin);
+		if (sellRate.getMaterial().isVariable()) {
+			ShopMaterial currency = materialFromAttached(1);
+			if (currency != null) {
+				sellRate = new Rate(sellRate.getAmount(), sellRate.getPrice(), currency);
+			}
+		}
 
 		if (buyRate == null && sellRate == null) throw new InvalidSignException();
 
@@ -407,6 +427,28 @@ public class Shop {
 				getSellCurrency().toString(plugin.getMaterialConfig())
 				);
 		}
+	}
+	// Get the material and/or currency from a furnace the sign is stuck to
+	private ShopMaterial materialFromAttached(int slot) {
+		final BlockFace face = ShopHelpers.getBack(sign);
+		final Block signBlock = sign.getBlock().getRelative(face);
+		
+		if (signBlock.getType() != Material.FURNACE) {
+			return null;
+		}
+
+		final BlockState signBlockState = signBlock.getState();
+		if (!(signBlockState instanceof InventoryHolder)) {
+			return null;
+		}
+		
+		InventoryHolder selectionInv = (InventoryHolder) signBlockState;
+		ItemStack item = selectionInv.getInventory().getItem(slot);
+		if (item == null) {
+			return null;
+		}
+		
+		return new ShopMaterial(item);
 	}
 	private void triggerRedstone(final PhysicalShop plugin) {
 		if(!plugin.getConfig().getBoolean(TRIGGER_REDSTONE)) return;

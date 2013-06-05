@@ -41,6 +41,7 @@ public class ShopMaterial {
 	private final short durability;
 	private final Material material;
 	private final ItemMeta meta;
+	private final boolean variable;
 	/**
 	 * @param itemStack items to derive this material from
 	 */
@@ -51,6 +52,7 @@ public class ShopMaterial {
 	                    final Material material,
 	                    final short durability,
 	                    final ItemMeta meta) {
+		this.variable = false;
 		this.material = material;
 		this.durability = durability;
 		this.meta = Bukkit.getItemFactory().equals(meta, null) ? null : meta;
@@ -61,33 +63,40 @@ public class ShopMaterial {
 	 */
 	public ShopMaterial(final String string) throws InvalidMaterialException {
 		meta = null;
-		final String[] strings = string.split(":");
+		if (string.equals("*")) {
+			this.variable = true;
+			this.material = Material.AIR;
+			this.durability = 0;
+		} else {
+			this.variable = false;
+			final String[] strings = string.split(":");
 
-		if (strings.length == 2) {
-			material = Material.matchMaterial(strings[0].trim());
-			try {
-				durability = Short.parseShort(strings[1].trim());
-			} catch (final NumberFormatException ex) {
-				throw new InvalidMaterialException();
+			if (strings.length == 2) {
+				material = Material.matchMaterial(strings[0].trim());
+				try {
+					durability = Short.parseShort(strings[1].trim());
+				} catch (final NumberFormatException ex) {
+					throw new InvalidMaterialException();
+				}
+				return;
 			}
-			return;
-		}
 
-		Material material = null;
+			Material material = null;
 
-		for (int i = 0; i < string.length(); ++i) {
-			if ((i == 0) || (string.charAt(i) == ' ')) {
-				material = Material.matchMaterial(string.substring(i).trim());
+			for (int i = 0; i < string.length(); ++i) {
+				if ((i == 0) || (string.charAt(i) == ' ')) {
+					material = Material.matchMaterial(string.substring(i).trim());
 
-				if (material != null) {
-					this.material = material;
-					durability = parseDurability(string.substring(0, i).trim(), material);
-					return;
+					if (material != null) {
+						this.material = material;
+						durability = parseDurability(string.substring(0, i).trim(), material);
+						return;
+					}
 				}
 			}
-		}
 
-		throw new InvalidMaterialException();
+			throw new InvalidMaterialException();
+		}
 	}
 	@Override
 	public boolean equals(final Object obj) {
@@ -109,6 +118,12 @@ public class ShopMaterial {
 	 */
 	public Material getMaterial() {
 		return material;
+	}
+	/**
+	 * @return the durability for this material
+	 */
+	public boolean isVariable() {
+		return variable;
 	}
 	/**
 	 * @param amount size to set the stack to
