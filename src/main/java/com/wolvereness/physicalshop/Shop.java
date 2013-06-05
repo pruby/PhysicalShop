@@ -10,7 +10,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
-import org.bukkit.craftbukkit.v1_4_6.CraftChunk;
+import org.bukkit.craftbukkit.v1_5_R2.CraftChunk;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
@@ -53,11 +53,11 @@ public class Shop {
 	private static void updateInventory(final Player player) {
 		player.updateInventory();
 	}
-	private final Rate buyRate;
+	private Rate buyRate;
 	private int hash;
-	private final ShopMaterial material;
+	private ShopMaterial material;
 	private final String ownerName;
-	private final Rate sellRate;
+	private Rate sellRate;
 	private final Sign sign;
 	
 	/**
@@ -87,24 +87,22 @@ public class Shop {
 	 */
 	private Shop(final String[] lines, final PhysicalShop plugin, final Sign sign) throws InvalidSignException {
 		this.sign = sign;
+		
 		material = getMaterial(lines, plugin.getMaterialConfig());
-		if (material.isVariable()) {
-			material = materialFromAttached(0);
-		}
 
 		if (material == null) throw new InvalidSignException();
 
 		buyRate = plugin.getPluginConfig().getBuyPatternHandler().getRate(lines[1], plugin);
-		if (buyRate.getMaterial().isVariable()) {
-			ShopMaterial currency = materialFromAttached(1);
+		if (sign != null && buyRate != null && buyRate.getMaterial().isVariable()) {
+			ShopMaterial currency = materialFromAttached(0, sign);
 			if (currency != null) {
-				buyRate = new Rate(buyRate.getAmount(), buyRate.getPrice(), materialFromAttached(1));
+				buyRate = new Rate(buyRate.getAmount(), buyRate.getPrice(), currency);
 			}
 		}
 
 		sellRate = plugin.getPluginConfig().getSellPatternHandler().getRate(lines[2], plugin);
-		if (sellRate.getMaterial().isVariable()) {
-			ShopMaterial currency = materialFromAttached(1);
+		if (sign != null && sellRate != null && sellRate.getMaterial().isVariable()) {
+			ShopMaterial currency = materialFromAttached(1, sign);
 			if (currency != null) {
 				sellRate = new Rate(sellRate.getAmount(), sellRate.getPrice(), currency);
 			}
@@ -429,7 +427,7 @@ public class Shop {
 		}
 	}
 	// Get the material and/or currency from a furnace the sign is stuck to
-	private ShopMaterial materialFromAttached(int slot) {
+	private static ShopMaterial materialFromAttached(int slot, Sign sign) {
 		final BlockFace face = ShopHelpers.getBack(sign);
 		final Block signBlock = sign.getBlock().getRelative(face);
 		
@@ -472,7 +470,7 @@ public class Shop {
 
 		final CraftChunk chunk = (CraftChunk) activatedBlock.getChunk();
 
-		net.minecraft.server.v1_4_6.Block
+		net.minecraft.server.v1_5_R2.Block
 			.byId[chunk.getHandle().world.getTypeId(
 				activatedBlock.getX(),
 				activatedBlock.getY(),

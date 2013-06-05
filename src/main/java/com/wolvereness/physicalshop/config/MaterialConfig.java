@@ -112,6 +112,14 @@ public class MaterialConfig {
 	 * @return ShopMaterial Associated with the currencyIdentifier, or null if not found
 	 */
 	public ShopMaterial getCurrency(final String currencyIdentifier) {
+		if (currencyIdentifier.equals("*")) {
+			try {
+				return new ShopMaterial("*");
+			} catch (InvalidMaterialException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		return currencies.get(currencyIdentifier);
 	}
 	/**
