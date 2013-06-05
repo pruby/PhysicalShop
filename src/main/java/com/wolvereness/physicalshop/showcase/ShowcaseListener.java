@@ -24,7 +24,9 @@ public class ShowcaseListener implements Listener {
 	/**
 	 * The MC version that it was compiled against.
 	 */
-	public static final String MC_VERSION = "(MC: 1.4.6)";
+	@Deprecated
+	public static final String MC_VERSION = "(MC: 1.4.7)";
+	public static final String PACKAGE_VERSION = "v1_4_R1";
 
 	private final Object destroyPacket = null;
 	private int entityId;

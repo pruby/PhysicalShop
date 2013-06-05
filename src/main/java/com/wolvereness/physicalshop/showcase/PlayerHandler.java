@@ -94,6 +94,7 @@ public class PlayerHandler {
 							motY   = entity.getField("motY");
 						}
 
+						@SuppressWarnings("unchecked")
 						@Override
 						public <T extends Throwable> Object invoke(final Object on, final Object...params) throws T {
 							try {
@@ -125,6 +126,7 @@ public class PlayerHandler {
 							id = entity.getField("id");
 						}
 
+						@SuppressWarnings("unchecked")
 						@Override
 						public <T extends Throwable> Object invoke(final Object entity, final Object...params) throws T {
 							try {
@@ -147,6 +149,7 @@ public class PlayerHandler {
 							newVelocity = velocity.getConstructor(entity);
 						}
 
+						@SuppressWarnings("unchecked")
 						@Override
 						public <T extends Throwable> Object invoke(final Object entity, final Object...params) throws T {
 							try {
@@ -171,6 +174,7 @@ public class PlayerHandler {
 							setLocation = entity.getMethod("setPosition", double.class, double.class, double.class);
 						}
 
+						@SuppressWarnings("unchecked")
 						@Override
 						public <T extends Throwable> Object invoke(final Object entity, final Object...params) throws T {
 							try {
@@ -207,6 +211,7 @@ public class PlayerHandler {
 							setItem = item.getMethod("setItemStack", newNMSStack.getReturnType());
 						}
 
+						@SuppressWarnings("unchecked")
 						@Override
 						public <T extends Throwable> Object invoke(final Object entity, final Object...params) throws T {
 							// [0] = NMS.EntityItem
@@ -251,6 +256,7 @@ public class PlayerHandler {
 			final Method getHandle = clazz.getMethod("getHandle", (Class[]) null);
 			return
 				new Invoker() {
+					@SuppressWarnings("unchecked")
 					@Override
 					public <T extends Throwable> Object invoke(final Object on, final Object...params) throws T {
 						final Object handle;
@@ -279,6 +285,7 @@ public class PlayerHandler {
 			final Field field = clazz.getField("playerConnection");
 			return
 				new Invoker() {
+					@SuppressWarnings("unchecked")
 					@Override
 					public <T extends Throwable> Object invoke(final Object on, final Object...params) throws T {
 						try {
@@ -300,6 +307,7 @@ public class PlayerHandler {
 			}
 			return
 				new Invoker() {
+					@SuppressWarnings("unchecked")
 					@Override
 					public <T extends Throwable> Object invoke(final Object on, final Object...params) throws T {
 						try {
