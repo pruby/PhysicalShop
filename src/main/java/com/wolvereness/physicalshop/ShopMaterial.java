@@ -238,6 +238,19 @@ public class ShopMaterial {
 		case SANDSTONE:
 			sb.append(new Sandstone(material, (byte) durability).getType().toString()).append('_');
 		}
-		return sb.append(material.toString());
+		sb.append(material.toString());
+		if (this.meta != null && this.meta.hasDisplayName()) {
+			sb.append(" – ");
+			sb.append(this.meta.getDisplayName());
+			sb.append("§r");
+		}
+		if (this.meta != null && this.meta.hasLore()) {
+			for (String entry : this.meta.getLore()) {
+				sb.append(", ");
+				sb.append(entry.replace("\n", " ").replace("\r", " "));
+				sb.append("§r");
+			}
+		}
+		return sb;
 	}
 }
