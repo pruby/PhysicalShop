@@ -30,7 +30,9 @@ public class InventoryHelpers {
 				} else {
 					if (	(s.getType() != stack.getType())
 							|| (s.getDurability() != stack.getDurability())
-							|| (s.hasItemMeta())
+							|| (s.hasItemMeta() ^ stack.hasItemMeta()) // Invalid if one has meta and the other not
+							|| ((s.hasItemMeta() && stack.hasItemMeta()) // Both must have matching meta
+									&& !s.getItemMeta().equals(stack.getItemMeta()))
 							) {
 						continue;
 					}
@@ -95,7 +97,9 @@ public class InventoryHelpers {
 			if (	(i != null)
 					&& (i.getType() == material.getMaterial())
 					&& (i.getDurability() == material.getDurability())
-					&& !i.hasItemMeta()) {
+					&& !(i.hasItemMeta() ^ material.getStack(1).hasItemMeta())
+					&& (!i.hasItemMeta() || i.getItemMeta().equals(material.getStack(1).getItemMeta()))
+				) {
 				amount += i.getAmount();
 			}
 		}
@@ -134,7 +138,10 @@ public class InventoryHelpers {
 			if (	(s == null)
 					|| (s.getType() != stack.getType())
 					|| (s.getDurability() != stack.getDurability())
-					|| (s.hasItemMeta())) {
+					|| (s.hasItemMeta() ^ stack.hasItemMeta()) // Invalid if one has meta and the other not
+					|| ((s.hasItemMeta() && stack.hasItemMeta()) // Both must have matching meta
+							&& !s.getItemMeta().equals(stack.getItemMeta()))
+				) {
 				continue;
 			}
 
